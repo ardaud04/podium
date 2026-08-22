@@ -1,0 +1,140 @@
+.work__head {
+  margin-bottom: clamp(40px, 5vw, 66px);
+  max-width: 640px;
+}
+
+.work__head em {
+  color: var(--clay);
+}
+
+.work__head .lede {
+  margin-top: 16px;
+}
+
+.work__stack {
+  position: relative;
+}
+
+.case {
+  position: sticky;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 52px);
+  align-items: center;
+  background: var(--cream-hi);
+  border-radius: 32px;
+  box-shadow: var(--shadow);
+  padding: clamp(30px, 4vw, 52px);
+  margin-bottom: 26px;
+  border: 1px solid rgba(36, 26, 22, 0.05);
+  transform-origin: center top;
+}
+
+.case:nth-child(even) {
+  background: var(--cream);
+}
+
+.case__body {
+  position: relative;
+}
+
+.case__sector {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.case__name {
+  font-size: clamp(30px, 4vw, 52px);
+  margin: 12px 0 14px;
+}
+
+.case__result {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: var(--r-pill);
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
+.case__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+}
+
+.case__cols h4 {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.case__cols li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 9px;
+  font-size: 14.5px;
+  color: #463832;
+  line-height: 1.5;
+}
+
+.case__cols li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 9px;
+  height: 1px;
+  background: var(--clay);
+}
+
+.case__cols p {
+  font-size: 14.5px;
+  color: #463832;
+}
+
+.case__proof {
+  display: grid;
+  place-items: center;
+  align-self: center;
+}
+
+.case__proof img {
+  max-width: 100%;
+  max-height: 460px;
+  width: auto;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.8s var(--ease);
+}
+
+.case:hover .case__proof img {
+  transform: scale(1.03);
+}
+
+@media (max-width: 900px) {
+  .case {
+    grid-template-columns: 1fr;
+    position: relative;
+    top: auto !important;
+    padding: 26px 22px;
+  }
+  .case__proof img {
+    max-height: 330px;
+  }
+}
+
+@media (max-width: 560px) {
+  .case__cols {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

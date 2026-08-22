@@ -1,0 +1,38 @@
+.mqWords {
+  padding: 30px 0;
+  border-top: 1px solid rgba(36, 26, 22, 0.08);
+  border-bottom: 1px solid rgba(36, 26, 22, 0.08);
+}
+
+.mqWords__set {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.mqWords__set span {
+  display: inline-flex;
+  align-items: center;
+  gap: 30px;
+  font-family: var(--display);
+  font-size: clamp(24px, 3.4vw, 44px);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  padding-right: 30px;
+}
+
+.mqWords__alt {
+  font-style: italic;
+  color: var(--clay);
+}
+
+.mqWords__main {
+  color: var(--ink);
+}
+
+.mqWords__star {
+  font-style: normal;
+  font-size: 0.4em;
+  color: var(--clay);
+  opacity: 0.75;
+}

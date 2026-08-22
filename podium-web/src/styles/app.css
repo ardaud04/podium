@@ -1,0 +1,23 @@
+/* thin reading-progress line pinned to the very top */
+.scrollBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--clay), var(--blush));
+  transform-origin: 0 50%;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* keeps anchored sections clear of the floating nav */
+[id] {
+  scroll-margin-top: 100px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
