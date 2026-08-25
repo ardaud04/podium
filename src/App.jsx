@@ -5,13 +5,14 @@ import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Marquee from './components/Marquee';
-import Services from './components/Services';
-import Stats from './components/Stats';
-import Receipts from './components/Receipts';
+import Brands from './components/Brands';
 import CaseStudies from './components/CaseStudies';
 import Reel from './components/Reel';
+import About from './components/About';
+import Receipts from './components/Receipts';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import { ContactProvider } from './components/ContactModal';
 
 export default function App() {
   const reduced = useReducedMotion();
@@ -63,7 +64,7 @@ export default function App() {
   }, [reduced]);
 
   return (
-    <>
+    <ContactProvider>
       <motion.div className="scrollBar" style={{ scaleX: progress }} aria-hidden="true" />
 
       <Nav />
@@ -71,15 +72,15 @@ export default function App() {
       <main>
         <Hero />
         <Marquee />
-        <Services />
-        <Stats />
-        <Receipts />
+        <Brands />
         <CaseStudies />
         <Reel />
+        <About />
+        <Receipts />
         <Contact />
       </main>
 
       <Footer />
-    </>
+    </ContactProvider>
   );
 }

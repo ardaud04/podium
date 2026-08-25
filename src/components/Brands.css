@@ -1,0 +1,86 @@
+.brandsSection {
+  padding-top: clamp(24px, 3vw, 44px);
+}
+
+.brandsBand {
+  padding: clamp(56px, 7vw, 92px) 0 clamp(50px, 6vw, 80px);
+}
+
+.brands__head {
+  text-align: center;
+  margin-bottom: clamp(38px, 5vw, 58px);
+}
+
+.brands__head .h2 {
+  max-width: 22ch;
+  margin: 0 auto;
+}
+
+.brands__head em {
+  color: var(--blush);
+}
+
+.brandsRow__set {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-right: 18px;
+  flex: none;
+}
+
+/* one shared tile, so a cropped avatar, a wordmark and a plain name all read
+   as members of the same set rather than five unrelated pictures */
+.brandTile {
+  flex: none;
+  width: 208px;
+  height: 126px;
+  border-radius: 18px;
+  background: var(--cream-hi);
+  border: 1px solid rgba(36, 26, 22, 0.06);
+  /* flex, not grid: a percentage max-height on a grid item resolves against an
+     auto-sized track, which lets the logos spill straight out of the tile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  overflow: hidden;
+  transition:
+    transform 0.55s var(--ease),
+    box-shadow 0.55s var(--ease);
+}
+
+.brandTile:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* every logo is pinned to the same optical size, so eight sources cropped from
+   eight different screenshots still read as one set */
+.brandTile__img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* the avatars arrive as a circle on a square of the page behind them, so mask
+   the corners back off rather than showing a black box on a cream tile */
+.brandTile__img--circle {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* wordmarks are wide, so hold them by height and let the width follow */
+.brandTile__img--mark {
+  max-height: 60px;
+  width: auto;
+  border-radius: 4px;
+}
+
+@media (max-width: 700px) {
+  .brandTile {
+    width: 164px;
+    height: 96px;
+    padding: 14px 16px;
+  }
+}

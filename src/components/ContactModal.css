@@ -1,0 +1,143 @@
+.cform {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 13, 12, 0.62);
+  backdrop-filter: blur(6px);
+  overflow-y: auto;
+}
+
+.cform__panel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: var(--cream-hi);
+  color: var(--ink);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(28px, 4vw, 42px);
+  margin: auto;
+}
+
+.cform__close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--muted);
+  transition: color 0.3s ease;
+}
+
+.cform__close:hover {
+  color: var(--ink);
+}
+
+.cform__panel .kicker {
+  margin-bottom: 10px;
+}
+
+.cform__lede {
+  margin-top: 12px;
+  font-size: 15px;
+  color: #5c4a43;
+  max-width: 42ch;
+}
+
+.cform__form {
+  margin-top: 26px;
+  display: grid;
+  gap: 16px;
+}
+
+.cform__field {
+  display: grid;
+  gap: 7px;
+}
+
+.cform__field > span {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cform__field input,
+.cform__field textarea {
+  font: inherit;
+  font-size: 15.5px;
+  color: var(--ink);
+  background: rgba(36, 26, 22, 0.03);
+  border: 1px solid rgba(36, 26, 22, 0.14);
+  border-radius: 12px;
+  padding: 13px 15px;
+  width: 100%;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.cform__field textarea {
+  resize: vertical;
+  min-height: 108px;
+  line-height: 1.5;
+}
+
+.cform__field input::placeholder,
+.cform__field textarea::placeholder {
+  color: #a9968f;
+}
+
+.cform__field input:focus,
+.cform__field textarea:focus {
+  outline: none;
+  border-color: var(--clay);
+  background: #fff;
+}
+
+.cform__submit {
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.cform__submit[disabled] {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.cform__error {
+  font-size: 13.5px;
+  color: #a33f2e;
+  line-height: 1.5;
+}
+
+.cform__error a {
+  text-decoration: underline;
+}
+
+.cform__done {
+  text-align: center;
+  padding: 14px 0 4px;
+}
+
+.cform__done p {
+  margin: 14px auto 26px;
+  max-width: 34ch;
+  font-size: 15px;
+  color: #5c4a43;
+}
+
+@media (max-width: 520px) {
+  .cform {
+    padding: 12px;
+    align-items: flex-start;
+  }
+  .cform__panel {
+    padding: 30px 22px 26px;
+  }
+}

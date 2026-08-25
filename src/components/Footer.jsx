@@ -12,8 +12,8 @@ export default function Footer() {
           <div className="footer__brand">
             <img src="/images/logo-01.png" alt="Podium" className="footer__logo" />
             <p>
-              Growth and content systems for brands that would rather be watched than scrolled past.
-              Working out of Dubai and the UK.
+              Short-form editing and motion design, done end to end by one person. Everything on
+              this site is work I made myself.
             </p>
           </div>
 
@@ -47,8 +47,8 @@ export default function Footer() {
         </Reveal>
 
         <div className="footer__bar">
-          <small>&copy; {year} Podium. Growth and content systems.</small>
-          <small>Dubai to the UK</small>
+          <small>&copy; {year} Podium. Short-form editing and motion design.</small>
+          <small>Run by Abdul-Rashid</small>
         </div>
       </div>
     </footer>

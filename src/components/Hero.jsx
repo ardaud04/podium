@@ -1,6 +1,7 @@
 import { Fragment, useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
-import { hero, stats } from '../data/content';
+import { hero } from '../data/content';
+import { useContactForm } from './ContactModal';
 import './Hero.css';
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -8,6 +9,7 @@ const EASE = [0.16, 1, 0.3, 1];
 export default function Hero() {
   const ref = useRef(null);
   const reduced = useReducedMotion();
+  const { openForm } = useContactForm();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -28,15 +30,6 @@ export default function Hero() {
 
       <div className="wrap hero__wrap">
         <motion.div className="hero__copy" style={{ y: copyY, opacity: fade }}>
-          <motion.span
-            className="eyebrow eyebrow--onDark"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
-          >
-            {hero.eyebrow}
-          </motion.span>
-
           <h1 className="display h1 hero__title">
             {words.map((word, i) => (
               <Fragment key={word + i}>
@@ -44,7 +37,7 @@ export default function Hero() {
                   <motion.span
                     initial={{ y: '105%', rotate: 3 }}
                     animate={{ y: 0, rotate: 0 }}
-                    transition={{ duration: 0.95, delay: 0.32 + i * 0.08, ease: EASE }}
+                    transition={{ duration: 0.95, delay: 0.18 + i * 0.07, ease: EASE }}
                   >
                     {word}
                   </motion.span>
@@ -55,61 +48,51 @@ export default function Hero() {
               <motion.span
                 initial={{ y: '105%', rotate: 3 }}
                 animate={{ y: 0, rotate: 0 }}
-                transition={{ duration: 0.95, delay: 0.32 + words.length * 0.08, ease: EASE }}
+                transition={{ duration: 0.95, delay: 0.18 + words.length * 0.07, ease: EASE }}
               >
                 <em className="serif-em">{hero.headlineItalic}</em>
               </motion.span>
             </span>
           </h1>
 
-          <motion.p
-            className="hero__sub"
+          <motion.ul
+            className="hero__points"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.85, ease: EASE }}
+            transition={{ duration: 0.8, delay: 0.72, ease: EASE }}
           >
-            {hero.sub}
-          </motion.p>
+            {hero.points.map((point) => (
+              <li key={point}>
+                <span className="hero__tick" aria-hidden="true">
+                  &#10003;
+                </span>
+                {point}
+              </li>
+            ))}
+          </motion.ul>
 
           <motion.div
             className="hero__cta"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1, ease: EASE }}
+            transition={{ duration: 0.8, delay: 0.88, ease: EASE }}
           >
-            <a className="btn btn--solid" href={hero.primary.href}>
+            <button type="button" className="btn btn--solid" onClick={openForm}>
               {hero.primary.label}
               <span className="arrow">&rarr;</span>
-            </a>
+            </button>
             <a className="btn btn--ghost" href={hero.secondary.href}>
               {hero.secondary.label}
             </a>
           </motion.div>
-
-          <motion.ul
-            className="hero__ticks"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, delay: 1.15 }}
-          >
-            {stats.slice(0, 2).map((s) => (
-              <li key={s.label}>
-                <b>
-                  {s.value.toLocaleString()}
-                  {s.suffix}
-                </b>
-                <span>{s.label}</span>
-              </li>
-            ))}
-          </motion.ul>
         </motion.div>
 
-        {/* floating proof stack — the actual motion design work, front and centre */}
-        <motion.div className="hero__stack" style={{ y: stackY }} aria-hidden="true">
+        {/* floating proof stack — hovering one pulls it clear of the other two */}
+        <motion.div className="hero__stack" style={{ y: stackY }}>
           {[
-            { src: '/videos/ezuni_rebranding.mp4', cls: 'a', d: 0.55 },
-            { src: '/videos/iced_tea.mp4', cls: 'b', d: 0.7 },
-            { src: '/videos/mcp_motion_phone.mp4', cls: 'c', d: 0.85 },
+            { src: '/videos/ezuni_rebranding.mp4', cls: 'a', d: 0.45 },
+            { src: '/videos/iced_tea.mp4', cls: 'b', d: 0.6 },
+            { src: '/videos/mcp_motion_phone.mp4', cls: 'c', d: 0.75 },
           ].map((card) => (
             <motion.figure
               key={card.src}
@@ -118,10 +101,14 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 1.2, delay: card.d, ease: EASE }}
             >
-              {/* the drift lives on an inner element: a CSS animation would
-                  otherwise outrank the inline transform driving the entrance */}
-              <div className="hero__cardFloat">
-                <video src={card.src} autoPlay muted loop playsInline />
+              {/* three nested layers, because each owns a transform that would
+                  otherwise overwrite the others: Framer drives the entrance on
+                  the figure, the hover lift lives on the middle element, and the
+                  idle drift keyframes sit on the innermost one */}
+              <div className="hero__cardHover">
+                <div className="hero__cardFloat">
+                  <video src={card.src} autoPlay muted loop playsInline />
+                </div>
               </div>
             </motion.figure>
           ))}
@@ -129,11 +116,11 @@ export default function Hero() {
       </div>
 
       <motion.a
-        href="#about"
+        href="#work"
         className="hero__scroll"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
+        transition={{ delay: 1.4, duration: 0.8 }}
         style={{ opacity: fade }}
         aria-label="Scroll to content"
       >

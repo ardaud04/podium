@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { nav } from '../data/content';
+import { useContactForm } from './ContactModal';
 import './Nav.css';
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { openForm } = useContactForm();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -48,9 +50,9 @@ export default function Nav() {
           </nav>
 
           <div className="nav__right">
-            <a className="btn btn--solid nav__cta" href="#contact">
+            <button type="button" className="btn btn--solid nav__cta" onClick={openForm}>
               Start a project
-            </a>
+            </button>
             <button
               className="nav__burger"
               onClick={() => setOpen(true)}
@@ -102,9 +104,16 @@ export default function Nav() {
                 ))}
               </ul>
 
-              <a className="btn btn--solid drawer__cta" href="#contact" onClick={() => setOpen(false)}>
+              <button
+                type="button"
+                className="btn btn--solid drawer__cta"
+                onClick={() => {
+                  setOpen(false);
+                  openForm();
+                }}
+              >
                 Start a project
-              </a>
+              </button>
             </motion.div>
           </motion.div>
         )}
