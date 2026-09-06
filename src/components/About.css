@@ -35,17 +35,33 @@
   color: var(--clay);
 }
 
-.about__lede {
-  margin-top: 22px;
+.about__bullets {
+  display: grid;
+  gap: 16px;
+  margin-top: 26px;
+  max-width: 52ch;
 }
 
-/* both paragraphs read at the same weight; neither is a footnote */
-.about__para {
-  margin-top: 18px;
-  font-size: clamp(16.5px, 1.5vw, 19px);
-  line-height: 1.6;
+.about__bullets li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: clamp(16px, 1.45vw, 18px);
+  line-height: 1.5;
   color: #5c4a43;
-  max-width: 58ch;
+}
+
+.about__tick {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  color: var(--cream-hi);
+  background: var(--clay);
 }
 
 @media (max-width: 900px) {

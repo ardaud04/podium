@@ -30,14 +30,12 @@ export default function Receipts() {
         <div className="wrap">
           <Reveal className="receipts__head">
             <span className="kicker">Receipts</span>
-            <h2 className="display h2">
-              Screenshots, or it <em className="serif-em">did not happen.</em>
-            </h2>
+            <h2 className="display h2">Screenshots</h2>
           </Reveal>
         </div>
 
-        <Row images={receiptsRowA} duration="58s" />
-        <Row images={receiptsRowB} duration="66s" reverse />
+        <Row images={receiptsRowA} duration="38s" />
+        <Row images={receiptsRowB} duration="44s" reverse />
       </div>
     </section>
   );

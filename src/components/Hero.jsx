@@ -90,7 +90,7 @@ export default function Hero() {
         {/* floating proof stack — hovering one pulls it clear of the other two */}
         <motion.div className="hero__stack" style={{ y: stackY }}>
           {[
-            { src: '/videos/ezuni_rebranding.mp4', cls: 'a', d: 0.45 },
+            { src: '/videos/ezuni_motion_v2.mp4', cls: 'a', d: 0.45 },
             { src: '/videos/iced_tea.mp4', cls: 'b', d: 0.6 },
             { src: '/videos/mcp_motion_phone.mp4', cls: 'c', d: 0.75 },
           ].map((card) => (

@@ -18,11 +18,16 @@ export default function About() {
             {about.title} <em className="serif-em">{about.titleItalic}</em>
           </h2>
 
-          {about.body.map((para, i) => (
-            <p key={i} className={i === 0 ? 'lede about__lede' : 'about__para'}>
-              {para}
-            </p>
-          ))}
+          <ul className="about__bullets">
+            {about.bullets.map((point) => (
+              <li key={point}>
+                <span className="about__tick" aria-hidden="true">
+                  &#10003;
+                </span>
+                {point}
+              </li>
+            ))}
+          </ul>
         </Reveal>
       </div>
     </section>

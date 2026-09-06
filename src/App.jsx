@@ -4,12 +4,10 @@ import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
 
 import Nav from './components/Nav';
 import Hero from './components/Hero';
-import Marquee from './components/Marquee';
 import Brands from './components/Brands';
-import CaseStudies from './components/CaseStudies';
-import Reel from './components/Reel';
-import About from './components/About';
 import Receipts from './components/Receipts';
+import Work from './components/Work';
+import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import { ContactProvider } from './components/ContactModal';
@@ -71,12 +69,10 @@ export default function App() {
 
       <main>
         <Hero />
-        <Marquee />
         <Brands />
-        <CaseStudies />
-        <Reel />
-        <About />
         <Receipts />
+        <Work />
+        <About />
         <Contact />
       </main>
 

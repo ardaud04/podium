@@ -1,6 +1,5 @@
 export const nav = [
   { label: 'Work', href: '#work' },
-  { label: 'Motion', href: '#motion' },
   { label: 'About', href: '#about' },
   { label: 'Receipts', href: '#receipts' },
 ];
@@ -9,24 +8,10 @@ export const hero = {
   headline: ['Short-form', 'edits', 'and', 'motion', 'design'],
   headlineItalic: 'that get your brand watched.',
   // short enough to take in at a glance; the offer leads
-  points: [
-    'Three motion design videos for $300, not $2,500',
-    'Work delivered within 48 hours',
-    'Not happy? Full refund, no questions',
-  ],
+  points: ['Work delivered within 48 hours', 'Not happy? Full refund, no questions'],
   primary: { label: 'Start a project' },
   secondary: { label: 'See the work', href: '#work' },
 };
-
-// the headline already names the services, so these say something else
-export const marqueeWords = [
-  'Built to perform',
-  'Proof, not promises',
-  'Not just to post',
-  'Made by one person',
-  'Filmed, cut, posted',
-  'Numbers over vanity',
-];
 
 export const about = {
   kicker: 'About',
@@ -34,9 +19,10 @@ export const about = {
   titleItalic: 'me.',
   photo: '/images/abdul.jpg',
   photoAlt: 'Abdul-Rashid, founder of Podium',
-  body: [
-    "I'm Abdul-Rashid. I started Podium as a teenager, still at school, teaching myself to edit and learning the ins and outs of the marketing industry by working with clients around the world.",
-    'Since then I have run content for a jewellery brand in Florida, a burger shop in Northampton, an estate agent in Dubai and a Twitch streamer. Same person every time. I film it, cut it, post it, and keep going until the numbers move.',
+  bullets: [
+    'Started Podium as a teenager, still at school, self-taught in editing and the marketing industry.',
+    'Run content for a jewellery brand in Florida, a burger shop in Northampton, an estate agent in Dubai and a Twitch streamer.',
+    'Same person every time: I film it, cut it, post it, and keep going until the numbers move.',
   ],
 };
 
@@ -56,96 +42,75 @@ export const brands = {
   ],
 };
 
-export const reel = [
-  { title: 'MCP Motion', meta: 'Product animation', src: '/videos/mcp_motion_phone.mp4' },
-  { title: 'Iced Tea', meta: 'Brand spot', src: '/videos/iced_tea.mp4' },
-  { title: 'Ezuni Rebranding', meta: 'Identity in motion', src: '/videos/ezuni_rebranding.mp4' },
-];
-
 /**
- * Each case carries its own media. `kind` decides how a tile renders and
- * `ratio` how much room it takes: every tile in a row shares one height, so a
- * square or landscape piece simply sits wider than the portrait clips beside
- * it instead of being cropped to fit them.
- *
- * `stats` sit beside the name rather than trailing the sentence, so the number
- * that matters reads as a figure instead of a footnote.
+ * Two services, flipped between rather than shown as separate case studies.
+ * `kind` decides how a tile renders and `ratio` how much room it takes: every
+ * tile in a row shares one height, so a square or landscape piece simply sits
+ * wider than the portrait clips beside it instead of being cropped to fit.
  */
-export const cases = [
-  {
-    sector: 'Jewellery, USA',
-    name: 'Neptunes Blvd',
-    stats: [
-      { value: '9,700', label: 'Instagram followers' },
-      { value: '1,000+', label: 'TikTok followers' },
-    ],
-    summary:
-      'Daily posting across four platforms alongside a full content calendar built from scratch, reaching new follower milestones on both TikTok and Instagram.',
-    media: [
-      {
-        kind: 'image',
-        src: '/images/receipt-neptunes-1.jpg',
-        alt: 'Neptunes Blvd ring campaign',
-        ratio: 'square',
-      },
-      {
-        kind: 'image',
-        src: '/images/receipt-neptunes-2.jpg',
-        alt: 'Neptunes Blvd jewellery campaign',
-        ratio: 'square',
-      },
-      {
-        kind: 'video',
-        src: '/videos/work/neptunes-01.mp4',
-        poster: '/images/posters/neptunes-01.jpg',
-      },
-    ],
-  },
-  {
-    sector: 'Fast food, UK',
-    name: 'Yumas',
-    stats: [],
-    summary:
-      'Supported the edit on multiple long-form and short-form videos, lifting production quality and the way the finished cuts hold attention.',
-    media: [
-      { kind: 'youtube', id: 'EGz2cs4asoo', title: 'Yumas long-form edit', ratio: 'wide' },
-      {
-        kind: 'image',
-        src: '/images/case-yumas-profile.jpg',
-        alt: 'Yumas Kitchen Instagram profile',
-        ratio: 'wide',
-      },
-    ],
-  },
-  {
-    sector: 'Streamer',
-    name: 'dchriiss',
-    stats: [{ value: '1,500', label: 'Twitch followers gained' }],
-    summary:
-      'Short and long-form content produced weekly, testing different trends, formats and fonts, resulting in 1,500 new Twitch followers.',
-    media: [
-      { kind: 'video', src: '/videos/work/dchriiss-01.mp4', poster: '/images/posters/dchriiss-01.jpg' },
-      { kind: 'video', src: '/videos/work/dchriiss-02.mp4', poster: '/images/posters/dchriiss-02.jpg' },
-      { kind: 'video', src: '/videos/work/dchriiss-03.mp4', poster: '/images/posters/dchriiss-03.jpg' },
-      { kind: 'video', src: '/videos/work/dchriiss-04.mp4', poster: '/images/posters/dchriiss-04.jpg' },
-      { kind: 'video', src: '/videos/work/dchriiss-05.mp4', poster: '/images/posters/dchriiss-05.jpg' },
-    ],
-  },
-  {
-    sector: 'Real estate, Dubai',
-    name: 'Agent Short-form',
-    stats: [{ value: '10', label: 'videos delivered' }],
-    summary:
-      'Ten polished short-form videos with subtitles, overlays and cover images, shot across two professional sessions run end to end alongside freelance editors.',
-    media: [
-      { kind: 'video', src: '/videos/work/estates-01.mp4', poster: '/images/posters/estates-01.jpg' },
-      { kind: 'video', src: '/videos/work/estates-02.mp4', poster: '/images/posters/estates-02.jpg' },
-      { kind: 'video', src: '/videos/work/estates-03.mp4', poster: '/images/posters/estates-03.jpg' },
-      { kind: 'video', src: '/videos/work/estates-04.mp4', poster: '/images/posters/estates-04.jpg' },
-      { kind: 'video', src: '/videos/work/estates-05.mp4', poster: '/images/posters/estates-05.jpg' },
-    ],
-  },
-];
+export const work = {
+  title: 'Selected work',
+  tabs: [
+    {
+      id: 'editing',
+      label: 'Video editing',
+      media: [
+        {
+          kind: 'image',
+          src: '/images/receipt-neptunes-1.jpg',
+          alt: 'Neptunes Blvd ring campaign',
+          ratio: 'square',
+          caption: 'Neptunes Blvd',
+        },
+        {
+          kind: 'image',
+          src: '/images/receipt-neptunes-2.jpg',
+          alt: 'Neptunes Blvd jewellery campaign',
+          ratio: 'square',
+          caption: 'Neptunes Blvd',
+        },
+        {
+          kind: 'video',
+          src: '/videos/work/neptunes-01.mp4',
+          poster: '/images/posters/neptunes-01.jpg',
+          caption: 'Neptunes Blvd',
+        },
+        {
+          kind: 'youtube',
+          id: 'EGz2cs4asoo',
+          title: 'Yumas long-form edit',
+          ratio: 'wide',
+          caption: 'Yumas',
+        },
+        {
+          kind: 'video',
+          src: '/videos/easyuni-uk-us-launch.mp4',
+          poster: '/images/posters/easyuni-launch.jpg',
+          caption: 'EasyUni — UK/US launch',
+        },
+        { kind: 'video', src: '/videos/work/dchriiss-01.mp4', poster: '/images/posters/dchriiss-01.jpg', caption: 'dchriiss' },
+        { kind: 'video', src: '/videos/work/dchriiss-02.mp4', poster: '/images/posters/dchriiss-02.jpg', caption: 'dchriiss' },
+        { kind: 'video', src: '/videos/work/dchriiss-03.mp4', poster: '/images/posters/dchriiss-03.jpg', caption: 'dchriiss' },
+        { kind: 'video', src: '/videos/work/dchriiss-04.mp4', poster: '/images/posters/dchriiss-04.jpg', caption: 'dchriiss' },
+        { kind: 'video', src: '/videos/work/dchriiss-05.mp4', poster: '/images/posters/dchriiss-05.jpg', caption: 'dchriiss' },
+        { kind: 'video', src: '/videos/work/estates-01.mp4', poster: '/images/posters/estates-01.jpg', caption: 'Agent Short-form' },
+        { kind: 'video', src: '/videos/work/estates-02.mp4', poster: '/images/posters/estates-02.jpg', caption: 'Agent Short-form' },
+        { kind: 'video', src: '/videos/work/estates-03.mp4', poster: '/images/posters/estates-03.jpg', caption: 'Agent Short-form' },
+        { kind: 'video', src: '/videos/work/estates-04.mp4', poster: '/images/posters/estates-04.jpg', caption: 'Agent Short-form' },
+        { kind: 'video', src: '/videos/work/estates-05.mp4', poster: '/images/posters/estates-05.jpg', caption: 'Agent Short-form' },
+      ],
+    },
+    {
+      id: 'motion',
+      label: 'Motion design',
+      media: [
+        { title: 'MCP Motion', meta: 'Product animation', src: '/videos/mcp_motion_phone.mp4' },
+        { title: 'Iced Tea', meta: 'Brand spot', src: '/videos/iced_tea.mp4' },
+        { title: 'EasyUni', meta: 'Motion design', src: '/videos/ezuni_motion_v2.mp4' },
+      ],
+    },
+  ],
+};
 
 export const receiptsRowA = [
   '/images/receipt-nep-amethyst.jpg',
