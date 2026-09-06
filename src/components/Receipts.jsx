@@ -29,7 +29,6 @@ export default function Receipts() {
       <div className="band band--dark receipts__band">
         <div className="wrap">
           <Reveal className="receipts__head">
-            <span className="kicker">Receipts</span>
             <h2 className="display h2">Screenshots</h2>
           </Reveal>
         </div>

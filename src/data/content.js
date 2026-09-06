@@ -1,7 +1,7 @@
 export const nav = [
   { label: 'Work', href: '#work' },
   { label: 'About', href: '#about' },
-  { label: 'Receipts', href: '#receipts' },
+  { label: 'Screenshots', href: '#receipts' },
 ];
 
 export const hero = {
@@ -15,8 +15,7 @@ export const hero = {
 
 export const about = {
   kicker: 'About',
-  title: 'Abdul-Rashid Daud is',
-  titleItalic: 'me.',
+  title: 'Abdul-Rashid Daud',
   photo: '/images/abdul.jpg',
   photoAlt: 'Abdul-Rashid, founder of Podium',
   bullets: [

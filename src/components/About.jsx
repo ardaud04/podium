@@ -14,9 +14,7 @@ export default function About() {
 
         <Reveal delay={0.1} className="about__copy">
           <span className="kicker">{about.kicker}</span>
-          <h2 className="display h2">
-            {about.title} <em className="serif-em">{about.titleItalic}</em>
-          </h2>
+          <h2 className="display h2">{about.title}</h2>
 
           <ul className="about__bullets">
             {about.bullets.map((point) => (
