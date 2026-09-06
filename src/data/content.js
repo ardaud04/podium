@@ -62,13 +62,6 @@ export const work = {
           caption: 'Neptunes Blvd',
         },
         {
-          kind: 'youtube',
-          id: 'EGz2cs4asoo',
-          title: 'Yumas long-form edit',
-          ratio: 'wide',
-          caption: 'Yumas',
-        },
-        {
           kind: 'video',
           src: '/videos/easyuni-uk-us-launch.mp4',
           poster: '/images/posters/easyuni-launch.jpg',
