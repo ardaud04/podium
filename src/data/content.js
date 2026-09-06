@@ -15,13 +15,13 @@ export const hero = {
 
 export const about = {
   kicker: 'About',
-  title: 'Podium is',
+  title: 'Abdul-Rashid Daud is',
   titleItalic: 'me.',
   photo: '/images/abdul.jpg',
   photoAlt: 'Abdul-Rashid, founder of Podium',
   bullets: [
-    'Started Podium as a teenager, still at school, self-taught in editing and the marketing industry.',
-    'Run content for a jewellery brand in Florida, a burger shop in Northampton, an estate agent in Dubai and a Twitch streamer.',
+    'Started Podium as a teenager, still at school.',
+    'Run content for a jewellery brand in Florida, a burger shop in Northampton and an estate agent in Dubai.',
     'Same person every time: I film it, cut it, post it, and keep going until the numbers move.',
   ],
 };
@@ -55,20 +55,6 @@ export const work = {
       id: 'editing',
       label: 'Video editing',
       media: [
-        {
-          kind: 'image',
-          src: '/images/receipt-neptunes-1.jpg',
-          alt: 'Neptunes Blvd ring campaign',
-          ratio: 'square',
-          caption: 'Neptunes Blvd',
-        },
-        {
-          kind: 'image',
-          src: '/images/receipt-neptunes-2.jpg',
-          alt: 'Neptunes Blvd jewellery campaign',
-          ratio: 'square',
-          caption: 'Neptunes Blvd',
-        },
         {
           kind: 'video',
           src: '/videos/work/neptunes-01.mp4',
@@ -121,6 +107,7 @@ export const receiptsRowA = [
   '/images/receipt-ezuni-2.jpg',
   '/images/receipt-08.jpg',
   '/images/receipt-14.jpg',
+  '/images/receipt-neptunes-1.jpg',
 ];
 
 export const receiptsRowB = [
@@ -132,6 +119,7 @@ export const receiptsRowB = [
   '/images/receipt-16.jpg',
   '/images/receipt-ezuni-4.jpg',
   '/images/receipt-13.jpg',
+  '/images/receipt-neptunes-2.jpg',
 ];
 
 export const contact = [
