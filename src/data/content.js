@@ -100,6 +100,9 @@ export const receiptsRowA = [
   '/images/receipt-08.jpg',
   '/images/receipt-14.jpg',
   '/images/receipt-neptunes-1.jpg',
+  '/images/ezuni-marketing-1.jpg',
+  '/images/ezuni-marketing-3.jpg',
+  '/images/ezuni-marketing-5.jpg',
 ];
 
 export const receiptsRowB = [
@@ -112,6 +115,9 @@ export const receiptsRowB = [
   '/images/receipt-ezuni-4.jpg',
   '/images/receipt-13.jpg',
   '/images/receipt-neptunes-2.jpg',
+  '/images/ezuni-marketing-2.jpg',
+  '/images/ezuni-marketing-4.jpg',
+  '/images/ezuni-marketing-6.jpg',
 ];
 
 export const contact = [
