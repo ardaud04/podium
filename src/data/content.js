@@ -103,6 +103,7 @@ export const receiptsRowA = [
   '/images/ezuni-marketing-1.jpg',
   '/images/ezuni-marketing-3.jpg',
   '/images/ezuni-marketing-5.jpg',
+  '/images/rafestates-villa-flyer.jpg',
 ];
 
 export const receiptsRowB = [
