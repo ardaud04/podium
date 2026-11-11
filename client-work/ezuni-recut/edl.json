@@ -1,0 +1,15 @@
+{
+  "fps": 60,
+  "totalFrames": 506,
+  "source": "C:/Users/abdul/Downloads/05fbb1a9911d4c878abf63549a772e22.mov",
+  "segments": [
+    { "id": "A", "layer": "main", "srcIn": 0.000,  "outFrame": 0,   "frames": 87,  "fix": "caption", "note": "hook room, cut on 1.45 beat" },
+    { "id": "B", "layer": "main", "srcIn": 5.200,  "outFrame": 87,  "frames": 81,  "fix": "phone",   "note": "home, tap 5.50, push 6.02" },
+    { "id": "C", "layer": "main", "srcIn": 6.950,  "outFrame": 168, "frames": 69,  "fix": "phone",   "note": "brand, tap 7.10, push 7.62" },
+    { "id": "D", "layer": "main", "srcIn": 8.400,  "outFrame": 237, "frames": 33,  "fix": "phone",   "note": "campus, tap 8.60" },
+    { "id": "E", "layer": "main", "srcIn": 9.250,  "outFrame": 270, "frames": 36,  "fix": "phone",   "note": "continue, push 9.37" },
+    { "id": "F", "layer": "main", "srcIn": 10.150, "outFrame": 306, "frames": 43,  "fix": "phone",   "note": "booking, tap 10.30, runs under hex reveal" },
+    { "id": "G", "layer": "end",  "srcIn": 11.442, "outFrame": 328, "frames": 178, "fix": "caption", "note": "end card, revealed from frame 328" }
+  ],
+  "music": { "aEnd": 5.491, "bIn": 12.559, "xfade": 0.01, "note": "phrase-matched jump: hit 5.496 -> hit 12.574 (offset 7.078); final hit lands at out 8.193" }
+}

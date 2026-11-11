@@ -1,0 +1,257 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>EZUni recut timeline</title>
+<style>
+  @font-face { font-family: Jakarta; font-weight: 800; src: url(node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-800-normal.woff2); }
+  @font-face { font-family: Jakarta; font-weight: 700; src: url(node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff2); }
+  html, body { margin: 0; background: #071A2A; }
+  canvas { display: block; }
+</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// Deterministic timeline: everything is a pure function of t (seconds, out-timeline).
+// No CSS animation, no Date, no random. render(frame) draws one 60fps frame.
+const FPS = 60, W = 1080, H = 1920;
+const ctx = document.getElementById('c').getContext('2d');
+let FRAMES = '';                       // set by driver: file:// URL of the plate folder
+
+// ---------- easing ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, t0, d) => clamp((t - t0) / d);
+const easeOutExpo = k => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k);
+const easeInCubic = k => k * k * k;
+const easeOutCubic = k => 1 - Math.pow(1 - k, 3);
+const easeOutQuart = k => 1 - Math.pow(1 - k, 4);
+const easeInOutSine = k => -(Math.cos(Math.PI * k) - 1) / 2;
+function cubicBezier(p1x, p1y, p2x, p2y) {           // CSS-style bezier, solved numerically
+  const bx = (u, a, b) => 3 * a * u * (1 - u) ** 2 + 3 * b * u * u * (1 - u) + u ** 3;
+  return k => {
+    if (k <= 0) return 0; if (k >= 1) return 1;
+    let lo = 0, hi = 1, u = k;
+    for (let i = 0; i < 40; i++) { u = (lo + hi) / 2; if (bx(u, p1x, p2x) < k) lo = u; else hi = u; }
+    return bx(u, p1y, p2y);
+  };
+}
+const easeReveal = cubicBezier(0.42, 0, 0.08, 1);    // short wind-up, hard snap open on the beat
+const easeSwipe = cubicBezier(0.22, 1, 0.36, 1);
+function spring(tt, freq = 2.2, zeta = 0.62) {        // damped spring 0 -> 1, closed form
+  if (tt <= 0) return 0;
+  const w = 2 * Math.PI * freq, wd = w * Math.sqrt(1 - zeta * zeta);
+  return 1 - Math.exp(-zeta * w * tt) * (Math.cos(wd * tt) + (zeta * w / wd) * Math.sin(wd * tt));
+}
+// monotone cubic (Fritsch-Carlson) through keyframes -> smooth camera with no overshoot
+function monotone(keys) {
+  const n = keys.length, xs = keys.map(k => k[0]), ys = keys.map(k => k[1]);
+  const d = [], m = new Array(n).fill(0);
+  for (let i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+  for (let i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : 3 * (xs[i + 1] - xs[i - 1]) /
+    ((2 * xs[i + 1] - xs[i] - xs[i - 1]) / d[i - 1] + (xs[i + 1] + xs[i] - 2 * xs[i - 1]) / d[i]);
+  return x => {
+    if (x <= xs[0]) return ys[0]; if (x >= xs[n - 1]) return ys[n - 1];
+    let i = 0; while (x > xs[i + 1]) i++;
+    const h = xs[i + 1] - xs[i], s = (x - xs[i]) / h;
+    const h00 = 2 * s ** 3 - 3 * s * s + 1, h10 = s ** 3 - 2 * s * s + s, h01 = -2 * s ** 3 + 3 * s * s, h11 = s ** 3 - s * s;
+    return h00 * ys[i] + h10 * h * m[i] + h01 * ys[i + 1] + h11 * h * m[i + 1];
+  };
+}
+
+// ---------- timing (out-timeline seconds) ----------
+const T = {
+  hookCut: 87 / FPS,            // 1.45  room -> phone, on the music hit
+  revealStart: 328 / FPS,       // 5.467 Continue tap -> hex reveal, on the music hit / music edit
+  revealDur: 0.36,
+  finalHit: 8.193,              // last music hit (src 15.271 - 7.078 music offset)
+  end: 506 / FPS,
+};
+const CYAN = '#10A7B9', CYAN_HI = '#3FD8EC', NAVY = '#071A2A', INK = '#062033';
+// taps: out time, source-pixel position on the phone plate (match original ripples)
+const TAPS = [
+  { t: 1.75, x: 678, y: 777 },   // EZ Cleaning      (src 5.50)
+  { t: 2.95, x: 540, y: 1060 },  // Campus Clean-up  (src 7.10)
+  { t: 4.15, x: 395, y: 775 },   // Halls bedroom    (src 8.60)
+  { t: 4.50, x: 540, y: 1542 },  // Continue         (src 9.25, motivates push)
+  { t: 5.25, x: 688, y: 944 },   // 10:00-12:00      (src 10.30)
+  { t: T.revealStart, x: 540, y: 1542 },        // Continue -> reveal, on the 5.496 music hit
+];
+// camera: focus point (src px) and zoom keyed to the taps
+const PC = [540, 962];
+const camKeys = [
+  [T.hookCut, 540, 962, 1.00], [1.75, 678, 777, 1.035], [2.40, 540, 962, 1.02],
+  [2.95, 540, 1060, 1.045], [3.60, 540, 962, 1.03], [4.15, 395, 775, 1.055],
+  [4.50, 540, 1400, 1.05], [4.90, 540, 962, 1.04], [5.25, 688, 944, 1.065], [T.revealStart, 540, 1300, 1.075],
+];
+const camFX = monotone(camKeys.map(k => [k[0], k[1]]));
+const camFY = monotone(camKeys.map(k => [k[0], k[2]]));
+const camZ = monotone(camKeys.map(k => [k[0], k[3]]));
+
+function phoneCam(t) {
+  // returns {z, ox, oy}: screen = (src - F) * z + C  (+ entrance + tap nudges + reveal push)
+  const pull = 0.16;
+  let fx = lerp(PC[0], camFX(t), pull), fy = lerp(PC[1], camFY(t), pull), z = camZ(t);
+  let cx = PC[0], cy = PC[1];
+  const e = spring(t - T.hookCut, 2.1, 0.66);                 // entrance from below
+  z *= lerp(0.86, 1, e); cy += (1 - e) * 300;
+  for (const tp of TAPS) {                                     // tactile press on every tap
+    const k = t - tp.t; if (k > 0 && k < 0.5) z *= 1 - 0.012 * Math.sin(Math.PI * k / 0.5) * Math.exp(-4 * k);
+  }
+  if (t > T.revealStart) {                                     // push through the Continue button
+    const p = easeInCubic(prog(t, T.revealStart, T.revealDur));
+    z *= lerp(1, 1.45, p); fx = lerp(fx, 540, p); fy = lerp(fy, 1542, p);
+  }
+  return { z, ox: cx - fx * z, oy: cy - fy * z };
+}
+
+// ---------- assets ----------
+const cache = new Map();
+function img(name) {
+  if (!cache.has(name)) { const i = new Image(); i.src = FRAMES + name; cache.set(name, i.decode().then(() => i)); }
+  return cache.get(name);
+}
+const pad = n => String(n).padStart(5, '0');
+
+// ---------- drawing helpers ----------
+function bg() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgb(7,26,42)'); g.addColorStop(1, 'rgb(5,24,40)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function hexPath(cx, cy, r) {              // pointy-top hexagon, same orientation as the room cube
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 3, x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  }
+  ctx.closePath();
+}
+function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+
+// kinetic caption: words rise out of a clipped line, key phrase sits on a cyan pill that wipes in
+const FONT = '800 92px Jakarta';
+function caption(t, lines, t0, tOut) {
+  ctx.save(); ctx.font = FONT; ctx.textBaseline = 'alphabetic';
+  let wi = 0;
+  for (const L of lines) {
+    const words = L.words, gap = 26, pillPadX = 26;
+    const widths = words.map(w => ctx.measureText(w.text).width + (w.pill ? pillPadX * 2 : 0));
+    let x = W / 2 - (widths.reduce((a, b) => a + b, 0) + gap * (words.length - 1)) / 2;
+    const base = L.y, lineTop = base - 86, lineH = 116;
+    words.forEach((w, i) => {
+      const d = t0 + wi * 0.065; wi++;
+      const pin = easeOutExpo(prog(t, d, 0.55));
+      const pout = tOut != null ? easeInCubic(prog(t, tOut + i * 0.025, 0.2)) : 0;
+      const dy = (1 - pin) * lineH * 1.05 - pout * lineH * 1.1;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(x - 40, lineTop - 14, widths[i] + 80, lineH + 18); ctx.clip();
+      ctx.translate(0, dy);
+      if (w.pill) {
+        // pill wipes left->right after the word lands; collapses right on exit
+        const pw = easeOutQuart(prog(t, d + 0.06, 0.3));
+        const pc = tOut != null ? easeInCubic(prog(t, tOut - 0.04, 0.18)) : 0;
+        const px0 = x + widths[i] * pc, px1 = x + widths[i] * pw;
+        // word reads white before the pill arrives, navy-on-cyan once the pill has passed under it
+        ctx.fillStyle = '#FFFFFF'; ctx.fillText(w.text, x + pillPadX, base);
+        if (px1 > px0 + 1) {
+          ctx.save(); roundRect(px0, lineTop + 4, px1 - px0, lineH - 14, 22); ctx.fillStyle = CYAN; ctx.fill();
+          // shimmer band on the final music hit
+          if (w.shimmer) {
+            const s = prog(t, T.finalHit - 0.04, 0.5);
+            if (s > 0 && s < 1) {
+              ctx.clip(); const sx = lerp(px0 - 160, px1 + 160, easeOutCubic(s));
+              const g = ctx.createLinearGradient(sx - 90, 0, sx + 90, 0);
+              g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,255,0.55)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+              ctx.fillStyle = g; ctx.fillRect(px0, lineTop, px1 - px0, lineH);
+            }
+          }
+          ctx.clip(); ctx.fillStyle = INK; ctx.fillText(w.text, x + pillPadX, base);
+          ctx.restore();
+        }
+      } else {
+        ctx.fillStyle = '#FFFFFF'; ctx.fillText(w.text, x, base);
+      }
+      ctx.restore();
+      x += widths[i] + gap;
+    });
+  }
+  ctx.restore();
+}
+
+function tapMarker(t, tp, cam) {
+  const k = t - tp.t; if (k < -0.08 || k > 0.6) return;
+  const sx = tp.x * cam.z + cam.ox, sy = tp.y * cam.z + cam.oy;
+  ctx.save();
+  // anticipation: small ring contracts onto the target
+  if (k < 0) { const a = 1 + k / 0.08; ctx.strokeStyle = `rgba(16,167,185,${0.6 * a})`; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(sx, sy, lerp(54, 34, a), 0, Math.PI * 2); ctx.stroke(); ctx.restore(); return; }
+  const dot = easeOutCubic(prog(k, 0, 0.1)) * (1 - easeInCubic(prog(k, 0.22, 0.25)));
+  ctx.fillStyle = `rgba(16,167,185,${0.32 * dot})`; ctx.beginPath(); ctx.arc(sx, sy, 34 * (0.7 + 0.3 * dot), 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = `rgba(255,255,255,${0.95 * dot})`; ctx.beginPath(); ctx.arc(sx, sy, 9 * dot, 0, Math.PI * 2); ctx.fill();
+  const rp = easeOutCubic(prog(k, 0, 0.5));
+  ctx.strokeStyle = `rgba(16,167,185,${0.9 * (1 - rp)})`; ctx.lineWidth = lerp(6, 1.5, rp);
+  ctx.beginPath(); ctx.arc(sx, sy, lerp(34, 104, rp), 0, Math.PI * 2); ctx.stroke();
+  ctx.restore();
+}
+
+function hexBurst(t, t0, cx, cy) {          // on-beat cyan hex outline echoing the room's glowing edges
+  for (const [delay, w0, maxR] of [[0, 10, 1150], [0.07, 5, 820]]) {
+    const p = prog(t, t0 + delay, 0.6); if (p <= 0 || p >= 1) continue;
+    const e = easeOutCubic(p);
+    ctx.save(); hexPath(cx, cy, lerp(160, maxR, e));
+    ctx.strokeStyle = `rgba(63,216,236,${0.85 * (1 - p) ** 1.4})`; ctx.lineWidth = lerp(w0, 1, e);
+    ctx.shadowColor = CYAN_HI; ctx.shadowBlur = 24; ctx.lineJoin = 'round'; ctx.stroke(); ctx.restore();
+  }
+}
+
+// ---------- the frame ----------
+async function render(f) {
+  const t = f / FPS;
+  bg();
+  const revealP = easeReveal(prog(t, T.revealStart, T.revealDur));
+  const mainNeeded = f <= 348 && revealP < 1, endNeeded = f >= 328;
+  const [mainImg, endImg] = await Promise.all([
+    mainNeeded ? img(`main_${pad(f)}.png`) : null, endNeeded ? img(`end_${pad(f)}.png`) : null]);
+
+  if (mainImg) {
+    if (t < T.hookCut) {
+      // hook: slow settle-in, then a short accelerating push into the cut
+      const z = 1.035 - 0.035 * easeOutCubic(prog(t, 0, 0.9)) + 0.07 * easeInCubic(prog(t, T.hookCut - 0.28, 0.28));
+      ctx.save(); ctx.translate(540, 860); ctx.scale(z, z); ctx.translate(-540, -860); ctx.drawImage(mainImg, 0, 0); ctx.restore();
+    } else {
+      const cam = phoneCam(t);
+      ctx.save(); ctx.setTransform(cam.z, 0, 0, cam.z, cam.ox, cam.oy); ctx.drawImage(mainImg, 0, 0); ctx.restore();
+      for (const tp of TAPS) tapMarker(t, tp, cam);
+    }
+  }
+  if (t >= T.hookCut && t < T.hookCut + 0.8) hexBurst(t, T.hookCut, 540, 960);
+
+  if (endImg && revealP > 0) {
+    const cam = phoneCam(Math.min(t, T.revealStart));
+    const sx = 540 * cam.z + cam.ox, sy = 1542 * cam.z + cam.oy;     // Continue button on screen
+    const cx = lerp(sx, 540, revealP), cy = lerp(sy, 960, revealP), r = lerp(0, 2300, revealP);
+    const settle = 1 + 0.12 * (1 - easeOutCubic(prog(t, T.revealStart, 0.9)));   // end card lands with a pull-back
+    const drift = 1 + 0.025 * easeInOutSine(prog(t, T.revealStart + 0.9, T.end - T.revealStart - 0.9));
+    ctx.save();
+    if (revealP < 1) { hexPath(cx, cy, r); ctx.clip(); }
+    ctx.translate(540, 880); ctx.scale(settle * drift, settle * drift); ctx.translate(-540, -880);
+    ctx.drawImage(endImg, 0, 0); ctx.restore();
+    if (revealP < 1) {
+      ctx.save(); hexPath(cx, cy, r); ctx.strokeStyle = CYAN_HI; ctx.lineWidth = 7; ctx.lineJoin = 'round';
+      ctx.shadowColor = CYAN_HI; ctx.shadowBlur = 30; ctx.stroke(); ctx.restore();
+    }
+  }
+
+  // captions
+  if (t < T.hookCut) caption(t, [{ y: 372, words: [{ text: 'Is' }, { text: 'this' }, { text: 'you?', pill: true }] }], 0.03, T.hookCut - 0.24);
+  if (t >= T.revealStart) {
+    const pulse = 1 + 0.05 * Math.sin(Math.PI * clamp((t - T.finalHit) / 0.32)) * (t > T.finalHit ? 1 : 0);
+    ctx.save(); ctx.translate(540, 300); ctx.scale(pulse, pulse); ctx.translate(-540, -300);
+    caption(t, [
+      { y: 272, words: [{ text: 'Book' }, { text: 'now' }, { text: 'on' }] },
+      { y: 392, words: [{ text: 'the' }, { text: 'EZuni app', pill: true, shimmer: true }] },
+    ], T.revealStart + 0.2, null);
+    ctx.restore();
+  }
+}
+window.render = render;
+window.setFrames = u => { FRAMES = u; };
+window.ready = async () => { await document.fonts.load('800 92px Jakarta'); return document.fonts.check('800 92px Jakarta'); };
+</script></body></html>
