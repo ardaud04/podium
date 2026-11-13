@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reverse — Proper Ice Cream</title>
+<meta name="description" content="Reverse. Proper ice cream, no apology.">
+<link rel="icon" href="assets/logo-dark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brown: #2c1e17;
+    --cream: #e4d6b5;
+    --cream-light: #f0e8d6;
+    --mustard: #d9b447;
+    --muted: #a99a85;
+    --body: #6b5a48;
+    --gutter: clamp(16px, 5vw, 72px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Archivo", system-ui, sans-serif;
+    background: var(--brown);
+    color: var(--cream-light);
+    line-height: 1.45;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; height: auto; }
+
+  main {
+    flex: 1;
+    background: var(--cream);
+    color: var(--brown);
+    padding: 40px var(--gutter) 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header { text-align: center; }
+  .logo { width: min(320px, 80vw); margin: 0 auto; }
+  h1 { margin-top: 14px; font-size: clamp(22px, 2.4vw, 30px); font-weight: 800; letter-spacing: -0.02em; }
+
+  /* Mind map: nodes either side of the tub, joined to it by curves drawn in JS */
+  .map {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr minmax(260px, 420px) 1fr;
+    align-items: center;
+    gap: 0 48px;
+  }
+  .map svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .map path { fill: none; stroke: var(--brown); stroke-width: 1.5; stroke-dasharray: 4 5; opacity: .45; }
+  .map circle { fill: var(--brown); }
+  .tub { position: relative; z-index: 1; width: 100%; }
+  .col { display: grid; gap: 36px; position: relative; z-index: 1; }
+  .col.left { text-align: right; }
+  .node {
+    background: var(--cream-light);
+    border-radius: 18px;
+    padding: 16px 20px;
+    max-width: 300px;
+  }
+  .col.left .node { margin-left: auto; }
+  .node h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; }
+  .node p { margin-top: 6px; font-size: 14.5px; color: var(--body); }
+  .node.accent { background: var(--brown); color: var(--cream-light); }
+  .node.accent p { color: var(--muted); }
+
+  /* Distributor / retailer enquiries */
+  .partners {
+    background: var(--mustard);
+    color: var(--brown);
+    padding: 88px var(--gutter);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .partners h2 { font-size: clamp(34px, 4vw, 56px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; }
+  .partners .intro p { margin-top: 18px; font-size: 18px; max-width: 460px; color: #3d2c1c; }
+  .partners form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .partners .full { grid-column: 1 / -1; }
+  .partners label { display: grid; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
+  .partners input, .partners select, .partners textarea {
+    font: inherit;
+    font-size: 16px;
+    letter-spacing: normal;
+    text-transform: none;
+    font-weight: 400;
+    color: var(--brown);
+    background: var(--cream-light);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 12px 14px;
+    width: 100%;
+  }
+  .partners textarea { min-height: 110px; resize: vertical; }
+  .partners input:focus, .partners select:focus, .partners textarea:focus { outline: none; border-color: var(--brown); }
+  .partners button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 16px;
+    justify-self: start;
+    background: var(--brown);
+    color: var(--cream-light);
+    border: 0;
+    border-radius: 999px;
+    padding: 14px 28px;
+    cursor: pointer;
+  }
+  .partners button:disabled { opacity: .6; cursor: default; }
+  .form-status { align-self: center; font-weight: 600; }
+  .hp { position: absolute; left: -9999px; }
+
+  footer {
+    padding: 32px var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px 40px;
+  }
+  .label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  footer a { font-size: 18px; font-weight: 600; overflow-wrap: anywhere; }
+  footer a:hover { color: var(--cream); text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .map { grid-template-columns: 1fr; gap: 16px; }
+    .map svg { display: none; }
+    .tub { order: -1; width: min(320px, 85%); justify-self: center; }
+    .col, .col.left { text-align: left; gap: 16px; }
+    .node, .col.left .node { max-width: none; margin: 0; }
+    .partners { grid-template-columns: 1fr; gap: 28px; padding-top: 64px; padding-bottom: 64px; }
+    .partners form { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <header>
+    <img class="logo" src="assets/logo-dark.png" alt="reverse," width="750" height="132">
+    <h1>Refuse the Deal.</h1>
+  </header>
+
+  <div class="map" id="map">
+    <svg aria-hidden="true"></svg>
+    <div class="col left">
+      <div class="node"><h2>No apology.</h2><p>For years dessert has been sold with one. "Treat yourself." "Just this once." "Guilty pleasure."</p></div>
+      <div class="node"><h2>Not "guilt-free".</h2><p>Not "skinny". Not "the better choice". Different stories, same negotiation.</p></div>
+      <div class="node accent"><h2>Eating doesn't need permission.</h2><p>You don't owe anyone an explanation. Not your wellness coach, not your cheat-day calendar.</p></div>
+    </div>
+    <img class="tub" src="assets/pint.webp" alt="A pint of Reverse Chocolate Chocolate Brownie ice cream" width="900" height="900">
+    <div class="col right">
+      <div class="node"><h2>Proper Ice Cream.</h2><p>We built Reverse to change the conversation. So we made ice cream worth eating, full stop.</p></div>
+      <div class="node"><h2>Philosophy came first.</h2><p>Then the product had to earn it.</p></div>
+      <div class="node accent"><h2>Est. 2025.</h2><p>Launching in Dubai. There has to be a better way, so we built it.</p></div>
+    </div>
+  </div>
+</main>
+
+<section class="partners" id="partners">
+  <div class="intro">
+    <h2>Are you a distributor or retailer?</h2>
+    <p>If you’re interested in collaborating with Reverse, get in touch. We’re looking for brands who align with our principles.</p>
+  </div>
+  <!-- Submissions are emailed to the address below by FormSubmit (formsubmit.co).
+       The very first submission sends a one-time activation email to that inbox. -->
+  <form id="partner-form" action="https://formsubmit.co/nojunk@reverseicecream.com" method="POST">
+    <input type="hidden" name="_subject" value="New partner enquiry from the Reverse website">
+    <input type="hidden" name="_template" value="table">
+    <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label>Name<input name="name" autocomplete="name" required></label>
+    <label>Company<input name="company" autocomplete="organization" required></label>
+    <label>Email<input type="email" name="email" autocomplete="email" required></label>
+    <label>Phone<input type="tel" name="phone" autocomplete="tel"></label>
+    <label class="full">I am a
+      <select name="type" required>
+        <option value="" disabled selected>Choose one</option>
+        <option>Distributor</option>
+        <option>Retailer</option>
+        <option>Other</option>
+      </select>
+    </label>
+    <label class="full">Message<textarea name="message" placeholder="Tell us a little about your business"></textarea></label>
+    <button type="submit">Get in touch</button>
+    <p class="form-status" id="form-status" role="status"></p>
+  </form>
+</section>
+
+<footer>
+  <div><span class="label">Phone</span><a href="tel:+971559337965">055 933 7965</a></div>
+  <div><span class="label">Email</span><a href="mailto:nojunk@reverseicecream.com">nojunk@reverseicecream.com</a></div>
+  <div><span class="label">Instagram</span><a href="https://instagram.com/reverseicecream">@reverseicecream</a></div>
+</footer>
+
+<script>
+  // Draw a dashed curve from each node's inner edge to the tub.
+  const map = document.getElementById('map');
+  const svg = map.querySelector('svg');
+  const tub = map.querySelector('.tub');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  function draw() {
+    svg.innerHTML = '';
+    if (getComputedStyle(svg).display === 'none') return;
+    const m = map.getBoundingClientRect();
+    const t = tub.getBoundingClientRect();
+    const cy = t.top + t.height * 0.5 - m.top;
+    map.querySelectorAll('.node').forEach(node => {
+      const r = node.getBoundingClientRect();
+      const left = node.closest('.col').classList.contains('left');
+      const x1 = (left ? r.right : r.left) - m.left;
+      const y1 = r.top + r.height / 2 - m.top;
+      const x2 = (left ? t.left + t.width * 0.22 : t.right - t.width * 0.22) - m.left;
+      const y2 = cy + (y1 - cy) * 0.35;
+      const mx = (x1 + x2) / 2;
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+      svg.appendChild(path);
+      for (const [x, y] of [[x1, y1], [x2, y2]]) {
+        const dot = document.createElementNS(NS, 'circle');
+        dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('r', 3.5);
+        svg.appendChild(dot);
+      }
+    });
+  }
+  addEventListener('resize', draw);
+  addEventListener('load', draw);
+  document.fonts && document.fonts.ready.then(draw);
+
+  // Send the enquiry without leaving the page; fall back to a normal post if fetch fails.
+  const form = document.getElementById('partner-form');
+  const status = document.getElementById('form-status');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const button = form.querySelector('button');
+    button.disabled = true;
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      });
+      if (!res.ok) throw new Error(res.status);
+      form.reset();
+      status.textContent = 'Thanks, we’ll be in touch soon.';
+    } catch {
+      status.textContent = 'Something went wrong. Email us at nojunk@reverseicecream.com.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
